@@ -1,0 +1,13 @@
+{
+  "name": "dogather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ws:start": "pnpm -F @apps/ws run dev",
+    "client:dev": "pnpm -F @apps/client run dev",
+    "client:build": "pnpm -F @apps/client run dev build"
+  },
+  "author": "",
+  "license": "ISC"
+}
