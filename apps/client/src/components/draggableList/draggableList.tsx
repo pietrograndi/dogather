@@ -1,13 +1,13 @@
 import { useAtom} from "jotai"
-import { elements, todoList } from "../../data/atoms"
+import { elementsFamily, elementListAtom } from "../../data/atoms"
 import {  TodoItem } from "../todoItem"
 
 export const DraggableList = () => {
-  const [todos, setTodos] = useAtom(todoList)
+  const [todos, setTodos] = useAtom(elementListAtom)
 
   const deleteItem = (id:string) => {
     setTodos(prev => prev.filter(item => item !== id))
-    elements.remove({id})
+    elementsFamily.remove({id})
   }
 
   return ( <div> 

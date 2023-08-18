@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { elements } from "../../data/atoms"
+import { elementsFamily } from "../../data/atoms"
 
 type Props = {
   id:string
@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const TodoItem:React.FC<Props> = ({ id, remove }) => {
-  const [item, setItem] = useAtom(elements({id}))
+  const [item, setItem] = useAtom(elementsFamily({id}))
   const toggleCompleted = () => setItem({...item, completed: !item.completed})
   
   return (<div>

@@ -1,18 +1,18 @@
 import { FormEvent } from "react"
-import { elements, inputAtom, isUniqueInputValue, todoList } from "../../data/atoms"
+import { elementsFamily, inputAtom, isUniqueInputValue, elementListAtom } from "../../data/atoms"
 import { useAtom, useSetAtom } from 'jotai'
 import { nanoid } from "nanoid"
 
 export const TextInput:React.FC = () => {
   const [value, setValue] = useAtom(inputAtom)
-  const setTodos = useSetAtom(todoList)
+  const setTodos = useSetAtom(elementListAtom)
   const [isUnique] = useAtom(isUniqueInputValue)
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if(!isUnique ) return
     const id = nanoid()
-    elements({id, title: value })
+    elementsFamily({id, title: value })
     setTodos(prev  => [...prev, id])
     setValue('')
   }

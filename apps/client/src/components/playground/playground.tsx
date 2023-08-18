@@ -1,22 +1,14 @@
 import { TextInput } from "../textInput"
 import { DraggableList } from "../draggableList"
 import { useAtom } from "jotai"
-import { derivedElements } from "../../data/atoms"
-import { useEffect } from "react"
+import { serDeser } from "../../data/atoms"
 import { setDataToLocalStorage } from "../../data/localData"
+import { LocalStorageActionType } from "../../types"
 
 export const Playground = () => {
-  const [derivedState] = useAtom(derivedElements)
-
-  useEffect(() => {
-    console.log('maniscalco')
-  },[])
+  const [,dispatch ] = useAtom(serDeser)
   
-  useEffect(() => {
-    console.log('magutto')
-    setDataToLocalStorage(derivedState)
-  },[derivedState])
-  
+  dispatch({ type: LocalStorageActionType.SERIALIZE, callback: setDataToLocalStorage})
   
   return (
     <div>

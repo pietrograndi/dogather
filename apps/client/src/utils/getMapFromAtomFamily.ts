@@ -1,10 +1,12 @@
 import { Getter } from "jotai";
-import { elements } from "../data/atoms";
+import { elementsFamily } from "../data/atoms";
 import { ListItem } from "../types";
 
-export const mapElementsById = (get: Getter, todos: string[]) => {
+export const mapElementsById = (
+  get: Getter,
+  todos: string[]
+): Record<string, ListItem> => {
   return todos.reduce((acc, id) => {
-    acc.set(id, get(elements({ id })));
-    return acc;
-  }, new Map<string, ListItem>());
+    return { ...acc, [id]: get(elementsFamily({ id })) };
+  }, {});
 };
