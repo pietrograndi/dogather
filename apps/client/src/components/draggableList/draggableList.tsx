@@ -2,12 +2,16 @@ import { useAtom} from "jotai"
 import { elementsFamily, elementListAtom } from "../../data/atoms"
 import {  TodoItem } from "../todoItem"
 
-export const DraggableList = () => {
-  const [todos, setTodos] = useAtom(elementListAtom)
+type Props = {
+  remove: (id:string) => void
+}
+
+export const DraggableList:React.FC<Props> = ({remove}) => {
+  const [todos] = useAtom(elementListAtom)
 
   const deleteItem = (id:string) => {
-    setTodos(prev => prev.filter(item => item !== id))
     elementsFamily.remove({id})
+    remove(id)
   }
 
   return ( <div> 

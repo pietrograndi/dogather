@@ -65,13 +65,14 @@ const deserializer = (set: Setter) => {
   }
 };
 
-export const serDeser = atom(
-  (get: Getter) => {
-    const elementList = get(elementListAtom);
-    const elementMap = mapElementsById(get, elementList);
+export const serializeDeserializeAtom = atom(
+  null,
+  // (get: Getter) => {
+  //   const elementList = get(elementListAtom);
+  //   const elementMap = mapElementsById(get, elementList);
 
-    return { elementList, elementMap, versionId: nanoid() };
-  },
+  //   return { elementList, elementMap, versionId: nanoid() };
+  // },
   (get: Getter, set: Setter, action: Action) => {
     switch (action.type) {
       case LocalStorageActionType.SERIALIZE:
