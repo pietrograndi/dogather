@@ -14,7 +14,7 @@ interface SerializeAction {
 }
 interface DeserializeAction {
   type: LocalStorageActionType.DESERIALIZE;
-  value: string;
+  callback: VoidFunction;
 }
 
 export type Action = SerializeAction | DeserializeAction;

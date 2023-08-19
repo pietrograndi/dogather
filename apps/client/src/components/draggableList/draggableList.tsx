@@ -4,6 +4,7 @@ import {  TodoItem } from "../todoItem"
 
 type Props = {
   remove: (id:string) => void
+  // onChange: VoidFunction
 }
 
 export const DraggableList:React.FC<Props> = ({remove}) => {
@@ -12,6 +13,7 @@ export const DraggableList:React.FC<Props> = ({remove}) => {
   const deleteItem = (id:string) => {
     elementsFamily.remove({id})
     remove(id)
+
   }
 
   return ( <div> 
