@@ -1,1 +1,0 @@
-export { Standalone } from "./standalone";

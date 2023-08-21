@@ -6,7 +6,6 @@ import { LocalStorageActionType } from "../../types"
 import { STORAGE_KEYS } from "../../utils/app_constants"
 import { useEffect, useState } from "react"
 
-
 export const Playground:React.FC = () => {
   const [autoSave, setAutoSave ] = useState(false)
   const [prova] = useAtom(provaAtom)
@@ -32,17 +31,10 @@ export const Playground:React.FC = () => {
     setElementList(prev => prev.filter(item => item !== id))
   }
 
-  const handleSerialize = () => {
-    dispatch({
-      type: LocalStorageActionType.SERIALIZE, 
-      callback: (value:string) => { localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,value)}  })
-  }
-  
   const handleDeserialize = () => {
     dispatch({
       type: LocalStorageActionType.DESERIALIZE,
       callback: () => {
-        console.log('ok fatto')
         setAutoSave(true)
       }
     })
@@ -52,7 +44,6 @@ export const Playground:React.FC = () => {
     <div>
       <TextInput add={handleNewItem} />
       <DraggableList remove={handleRemoveItem}/>
-      <button onClick={handleSerialize}>save</button>
     </div>
   )
 } 

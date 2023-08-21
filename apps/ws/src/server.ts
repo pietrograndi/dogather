@@ -14,7 +14,7 @@ app.use(cors());
 const io = new socketIO(server, {
   transports: ["websocket", "polling"],
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "OPTION"],
   },
 });

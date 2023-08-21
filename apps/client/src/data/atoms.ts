@@ -78,7 +78,6 @@ export const provaAtom = atom((get) => {
     elementMap,
     versionId,
   };
-  console.log("hello!");
   return obj;
 });
 

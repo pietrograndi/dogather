@@ -19,7 +19,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
     "react-use-websocket": "^4.3.1",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "use-query-params": "^2.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
