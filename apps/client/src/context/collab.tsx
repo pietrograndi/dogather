@@ -16,13 +16,11 @@ type Props = {
 
 export const CollaborationContextProvider:React.FC<Props> = ({children}) => {
   const [roomId] = useQueryParam('room', StringParam)
-  const {socket, isConnected } = useSocket(roomId || null)
+  useSocket(roomId || null)
 
-  console.log({roomId})
-  console.log({isConnected})
 
   return <CollaborationContext.Provider value={{
-    isConnected
+    isConnected: false
   }}>{children}</CollaborationContext.Provider>
 }
 

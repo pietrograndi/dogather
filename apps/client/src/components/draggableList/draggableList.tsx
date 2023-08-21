@@ -4,7 +4,6 @@ import {  TodoItem } from "../todoItem"
 
 type Props = {
   remove: (id:string) => void
-  // onChange: VoidFunction
 }
 
 export const DraggableList:React.FC<Props> = ({remove}) => {

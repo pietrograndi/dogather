@@ -26,35 +26,45 @@ app.get("/", (req, res) => {
 
 try {
   io.on("connection", (socket) => {
-    logger.info("connessione stabilita");
-    io.to(socket.id).emit("init-room");
-    socket.on("join-room", async (roomId) => {
-      logger.info(`${socket.id} è entrato nella stanza ${roomId}`);
-    });
+    const { roomId } = socket.handshake.query 
 
-    socket.on("disconnect", () => {
-      logger.info("un client si è disconnesso");
-    });
+    logger.info("connessione stabilita " + roomId);
+    
+    socket.join(roomId as string)
+    
+    socket.on('disconnect', () => {
+      logger.info('disconnesso dalla room ' + roomId )
+      socket.leave(roomId as string)
+    })
 
-    socket.on("new-room", (data) => {
-      logger.info(data);
-    });
+    // socket.on("join-room", async (roomId) => {
+    //   logger.info(`${socket.id} è entrato nella stanza ${roomId}`);
+    // });
 
-    socket.on("message", (d) => {
-      logger.info(d);
-    });
+    // socket.on("disconnect", () => {
+    //   logger.info("un client si è disconnesso");
+    // });
 
-    socket.on("new-connection", async (roomId) => {
-      logger.info(`roomId ${roomId}`);
-      await socket.join(roomId);
-      const sockets = await io.in(roomId).fetchSockets();
-      if (sockets.length <= 1) {
-        io.to(socket.id).emit("sei il primo!");
-      } else {
-        logger.info(`${socket.id} new user emited to room ${roomId}`);
-        socket.broadcast.to(roomId).emit(`new user: ${socket.id}`);
-      }
-    });
+    // socket.on("new-room", (data) => {
+    //   logger.info(data);
+    // });
+
+    // socket.on("message", (d) => {
+    //   logger.info(d);
+    // });
+
+
+    // socket.on("new-connection", async (roomId) => {
+    //   logger.info(`roomId ${roomId}`);
+    //   await socket.join(roomId);
+    //   const sockets = await io.in(roomId).fetchSockets();
+    //   if (sockets.length <= 1) {
+    //     io.to(socket.id).emit("sei il primo!");
+    //   } else {
+    //     logger.info(`${socket.id} new user emited to room ${roomId}`);
+    //     socket.broadcast.to(roomId).emit(`new user: ${socket.id}`);
+    //   }
+    // });
   });
 } catch (e) {
   console.error(e);
