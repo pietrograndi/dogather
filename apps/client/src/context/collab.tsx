@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext } from "react";
 import { useQueryParam, StringParam } from 'use-query-params'
 import { useSocket } from "../hooks/useSocketIo";
 

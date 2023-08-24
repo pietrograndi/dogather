@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "ws:start": "pnpm -F @apps/ws run dev",
+    "ws:dev": "pnpm -F @apps/ws run start:dev",
+    "ws:prod": "pnpm -F @apps/ws run start:production",
     "client:dev": "pnpm -F @apps/client run dev",
     "client:build": "pnpm -F @apps/client run dev build"
   },

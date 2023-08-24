@@ -3,10 +3,18 @@ import http from "http";
 import cors from "cors";
 import pino from "pino";
 import { Server as socketIO } from "socket.io";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: `../shared/.env.${process.env.NODE_ENV}`,
+});
 
 const app = express();
 const logger = pino();
-const port = 31337;
+
+console.log(process.env.NODE_ENV);
+
+const port = process.env.WS_PORT || 8080;
 
 const server = http.createServer(app);
 app.use(cors());
@@ -14,7 +22,7 @@ app.use(cors());
 const io = new socketIO(server, {
   transports: ["websocket", "polling"],
   cors: {
-    origin: "http://localhost:5173",
+    origin: `http://localhost:${process.env.VITE_PORT}`,
     methods: ["GET", "POST", "OPTION"],
   },
 });
@@ -26,16 +34,16 @@ app.get("/", (req, res) => {
 
 try {
   io.on("connection", (socket) => {
-    const { roomId } = socket.handshake.query 
+    const { roomId } = socket.handshake.query;
 
     logger.info("connessione stabilita " + roomId);
-    
-    socket.join(roomId as string)
-    
-    socket.on('disconnect', () => {
-      logger.info('disconnesso dalla room ' + roomId )
-      socket.leave(roomId as string)
-    })
+
+    socket.join(roomId as string);
+
+    socket.on("disconnect", () => {
+      logger.info("disconnesso dalla room " + roomId);
+      socket.leave(roomId as string);
+    });
 
     // socket.on("join-room", async (roomId) => {
     //   logger.info(`${socket.id} è entrato nella stanza ${roomId}`);
@@ -52,7 +60,6 @@ try {
     // socket.on("message", (d) => {
     //   logger.info(d);
     // });
-
 
     // socket.on("new-connection", async (roomId) => {
     //   logger.info(`roomId ${roomId}`);

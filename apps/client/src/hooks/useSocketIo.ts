@@ -1,45 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 // import { socket } from "../utils/socket";
 // import { WS_EVENTS } from "../utils/app_constants";
-import {io, Socket } from 'socket.io-client'
+import { io, Socket } from "socket.io-client";
 import { WS_EVENTS } from "../utils/app_constants";
 
 const URL = "http://localhost:31337";
 
-export const useSocket = (roomId:string|null) => {
-  const socketRef = useRef<Socket | null>(null)
-  const [isConnected, setIsConnected ] = useState(false) 
+export const useSocket = (roomId: string | null) => {
+  const socketRef = useRef<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    debugger
-    socketRef.current = (roomId && socketRef.current === null) ? io(URL, {query: {
-      roomId
-    }}) : null
+    socketRef.current =
+      roomId && socketRef.current === null
+        ? io(URL, {
+            query: {
+              roomId,
+            },
+          })
+        : null;
 
     function onConnect() {
-      console.log('connect!')
-      setIsConnected(true)
-    }
-    
-    function onDisconnect() {
-      console.log('disconnect')
-      setIsConnected(false)
-      socketRef.current = null
+      console.log("connect!");
+      setIsConnected(true);
     }
 
-    socketRef.current?.on(WS_EVENTS.WS_CONNECT, onConnect)
-    socketRef.current?.on(WS_EVENTS.WS_DISCONNECT, onDisconnect)
+    function onDisconnect() {
+      console.log("disconnect");
+      setIsConnected(false);
+      socketRef.current = null;
+    }
+
+    socketRef.current?.on(WS_EVENTS.WS_CONNECT, onConnect);
+    socketRef.current?.on(WS_EVENTS.WS_DISCONNECT, onDisconnect);
 
     return () => {
-      socketRef.current?.off(WS_EVENTS.WS_CONNECT,onConnect)
-      socketRef.current?.off(WS_EVENTS.WS_DISCONNECT, onDisconnect)
-    }
+      socketRef.current?.off(WS_EVENTS.WS_CONNECT, onConnect);
+      socketRef.current?.off(WS_EVENTS.WS_DISCONNECT, onDisconnect);
+    };
+  }, [roomId]);
 
-  }, [roomId])
-  
-  return { isConnected, socket: socketRef.current }
-}
-
+  return { isConnected, socket: socketRef.current };
+};
 
 // export const useSocket = (roomId: string | null) => {
 //   const [isConnected, setIsConnected] = useState(socket.connected);
