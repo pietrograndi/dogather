@@ -12,6 +12,10 @@ export const Playground:React.FC = () => {
   const [prova] = useAtom(provaAtom)
   const [,dispatch] = useAtom(serializeDeserializeAtom)
   
+  const wsURI = process.env.VITE_PORT
+  const wsPORT = process.env.WS_PORT
+  console.log(wsURI)
+  console.log(wsPORT)
   useEffect(() => {
     handleDeserialize()
   },[])
