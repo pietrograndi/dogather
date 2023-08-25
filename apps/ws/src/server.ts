@@ -3,10 +3,15 @@ import http from "http";
 import cors from "cors";
 import pino from "pino";
 import { Server as socketIO } from "socket.io";
+import dotenv from 'dotenv'
+
+dotenv.config({
+  path: `../shared/.env.${process.env.NODE_ENV}`
+})
 
 const app = express();
 const logger = pino();
-const port = 31337;
+const port = process.env.WS_PORT || 8080;
 
 const server = http.createServer(app);
 app.use(cors());
@@ -14,7 +19,7 @@ app.use(cors());
 const io = new socketIO(server, {
   transports: ["websocket", "polling"],
   cors: {
-    origin: "http://localhost:3000",
+    origin: `http://localhost:${process.env.VITE_PORT}`,
     methods: ["GET", "POST", "OPTION"],
   },
 });
