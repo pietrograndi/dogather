@@ -1,0 +1,1 @@
+export { Collabo } from "./collabo";

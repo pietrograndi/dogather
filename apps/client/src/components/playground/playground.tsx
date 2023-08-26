@@ -43,6 +43,7 @@ export const Playground:React.FC = () => {
   const handleRemoveItem = (id:string) => {
     setElementList(prev => prev.filter(item => item !== id))
   }
+  
 
   return (
     <div>
