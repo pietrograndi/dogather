@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useState } from "react"
 import { StringParam, useQueryParam } from 'use-query-params'
 import { useSocket } from "../hooks/useSocketIo"
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
 
 type ContextValues = {
   startCollaboration: VoidFunction
+  disconnect: VoidFunction
   roomId: string | undefined
   isConnected: boolean
 }
@@ -15,6 +16,8 @@ type ContextValues = {
 const CollabContext = createContext<ContextValues>({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   startCollaboration: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  disconnect: () => {},
   roomId: undefined,
   isConnected: false
 })
@@ -22,14 +25,21 @@ const CollabContext = createContext<ContextValues>({
 
 export const CollabContextComponent = ({children}:Props) => {
   const [room, setRoom ] = useQueryParam('room',StringParam)
-  const { socket, isConnected } = useSocket(room || undefined)
+  const [isConnected, setIsConnected ] = useState(false)
+  const {disconnect: socketDisconnect} = useSocket(room || undefined, setIsConnected)
 
   const startCollaboration = () => {
     setRoom(nanoid())
   }
 
+  const disconnect = () => {
+    socketDisconnect()
+    setRoom(null)
+  }
+
   const value: ContextValues = {
     isConnected,
+    disconnect,
     startCollaboration,
     roomId: room || undefined
   }

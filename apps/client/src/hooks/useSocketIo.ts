@@ -1,39 +1,37 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Socket, io } from "socket.io-client";
 import { WS_EVENTS } from "../utils/app_constants";
 
 const wsAddress = `${process.env.WS_BASE_URL}:${process.env.WS_PORT}`;
 
-type useSocketType = {
-  isConnected: boolean;
-  socket: Socket | null;
-};
+export const useSocket = (
+  roomId: string | undefined,
+  setConnection: (connected: boolean) => void
+) => {
+  const socketRef = useRef<Socket | null>();
 
-export const useSocket = (roomId: string | undefined): useSocketType => {
-  const socketRef = useRef<Socket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
+  const disconnect = () => {
+    socketRef.current?.disconnect();
+  };
 
   useEffect(() => {
-    socketRef.current = roomId && !isConnected ? io(wsAddress) : null;
+    socketRef.current = io(wsAddress, { query: { roomId } });
 
-    function onConnect() {
-      console.log("⚡ connect!");
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      console.log("🔌 disconnect!");
-      setIsConnected(false);
-    }
-
-    socketRef.current?.on(WS_EVENTS.WS_CONNECT, onConnect);
-    socketRef.current?.on(WS_EVENTS.WS_DISCONNECT, onDisconnect);
+    socketRef.current?.on(WS_EVENTS.WS_CONNECT, () => {
+      setConnection(true);
+    });
+    socketRef.current?.on(WS_EVENTS.WS_DISCONNECT, () => {
+      setConnection(false);
+    });
 
     return () => {
-      socketRef.current?.off(WS_EVENTS.WS_CONNECT, onConnect);
-      socketRef.current?.off(WS_EVENTS.WS_DISCONNECT, onDisconnect);
+      socketRef.current?.off(WS_EVENTS.WS_DISCONNECT);
+      socketRef.current?.off(WS_EVENTS.WS_CONNECT);
+      socketRef.current?.disconnect();
     };
-  }, [roomId, isConnected]);
+  }, [roomId, setConnection]);
 
-  return { isConnected, socket: socketRef.current };
+  return {
+    disconnect,
+  };
 };

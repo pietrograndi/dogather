@@ -3,11 +3,11 @@ import http from "http";
 import cors from "cors";
 import pino from "pino";
 import { Server as socketIO } from "socket.io";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
 dotenv.config({
-  path: `../shared/.env.${process.env.NODE_ENV}`
-})
+  path: `../shared/.env.${process.env.NODE_ENV}`,
+});
 
 const app = express();
 const logger = pino();
