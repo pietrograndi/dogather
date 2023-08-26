@@ -12,18 +12,26 @@ export const Playground:React.FC = () => {
   const [prova] = useAtom(provaAtom)
   const [,dispatch] = useAtom(serializeDeserializeAtom)
   
-  const wsURI = process.env.VITE_PORT
-  const wsPORT = process.env.WS_PORT
-  console.log(wsURI)
-  console.log(wsPORT)
   useEffect(() => {
-    handleDeserialize()
-  },[])
+    const handleDeserialize = () => {
+      dispatch({
+        type: LocalStorageActionType.DESERIALIZE,
+        callback: (res:string) => {
+          console.log(res)
+          setAutoSave(true)
+        }
+      })
+    }
+    !autoSave && handleDeserialize()
+  },[dispatch,autoSave])
 
   useEffect(() => {
-    autoSave && dispatch({
-      type: LocalStorageActionType.SERIALIZE, 
-      callback: (value:string) => { localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,value)}  })
+    const handleSerialize = () => {
+      dispatch({
+        type: LocalStorageActionType.SERIALIZE, 
+        callback: (value:string) => { localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,value)}})
+    }
+    autoSave && handleSerialize()
   },[prova, autoSave, dispatch ])
 
   const setElementList = useSetAtom(elementListAtom)
@@ -36,27 +44,10 @@ export const Playground:React.FC = () => {
     setElementList(prev => prev.filter(item => item !== id))
   }
 
-  const handleSerialize = () => {
-    dispatch({
-      type: LocalStorageActionType.SERIALIZE, 
-      callback: (value:string) => { localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,value)}  })
-  }
-  
-  const handleDeserialize = () => {
-    dispatch({
-      type: LocalStorageActionType.DESERIALIZE,
-      callback: () => {
-        console.log('ok fatto')
-        setAutoSave(true)
-      }
-    })
-  }
-
   return (
     <div>
       <TextInput add={handleNewItem} />
       <DraggableList remove={handleRemoveItem}/>
-      <button onClick={handleSerialize}>save</button>
     </div>
   )
 } 

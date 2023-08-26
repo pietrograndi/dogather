@@ -1,12 +1,9 @@
-import { Getter, Setter, atom, createStore } from "jotai";
+import { Getter, Setter, atom } from "jotai";
 import { atomFamily } from "jotai/utils";
 import { Action, ListItem, LocalStorageActionType } from "../types";
 import { nanoid } from "nanoid";
 import { mapElementsById } from "../utils/getMapFromAtomFamily";
 import { getDataFromLocalStorage } from "./localData";
-import { STORAGE_KEYS } from "../utils/app_constants";
-import { isRight } from "fp-ts/lib/Either";
-import { storedDataCodec } from "../types/decoder";
 
 export const inputAtom = atom<string>("");
 
@@ -51,7 +48,7 @@ const serializer = (get: Getter) => {
   return { elementList, elementMap, versionId: nanoid() };
 };
 
-const deserializer = (set: Setter) => {
+const deserializer = (set: Setter): Promise<string> => {
   return new Promise((res, rej) => {
     try {
       const storedData = getDataFromLocalStorage();
@@ -61,8 +58,9 @@ const deserializer = (set: Setter) => {
           const element = storedData.elementMap[id];
           set(elementsFamily({ id, ...element }), element);
         });
-        res("");
+        res("localStorage synked");
       }
+      res("localStorage not");
     } catch (e) {
       rej(e);
     }
@@ -78,7 +76,6 @@ export const provaAtom = atom((get) => {
     elementMap,
     versionId,
   };
-  console.log("hello!");
   return obj;
 });
 
