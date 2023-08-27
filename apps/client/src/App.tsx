@@ -9,12 +9,10 @@ import { Collabo } from './components/collabo';
 
 const MainPage = () => {
   return (
-    <Provider>
       <CollabContextComponent>
         <Playground />
         <Collabo />
       </CollabContextComponent>
-    </Provider>
   )
 }
 
@@ -22,9 +20,11 @@ function App() {
   return (
     <BrowserRouter>
       <QueryParamProvider adapter={ReactRouter6Adapter}>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-        </Routes>
+          <Provider>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+            </Routes>
+          </Provider>
       </QueryParamProvider>
     </BrowserRouter>
     )

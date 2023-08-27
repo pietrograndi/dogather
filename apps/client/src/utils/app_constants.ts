@@ -5,6 +5,7 @@ export const STORAGE_KEYS = {
 export const WS_EVENTS = {
   WS_CONNECT: "connect",
   WS_DISCONNECT: "disconnect",
-  WS_MESSAGE: "message",
-  WS_NEW_CONNECTION: "new-connection",
+  WS_JOIN_ROOM: "join-room",
+  WS_FIRST_IN_ROOM: "first-in-room",
+  WS_NEW_USER: "new-user",
 } as const;

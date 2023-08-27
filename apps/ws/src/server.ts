@@ -32,29 +32,39 @@ app.get("/", (req, res) => {
 try {
   io.on("connection", (socket) => {
     logger.info("connessione stabilita");
+    socket.emit("init-room");
 
-    const { roomId, username } = socket.handshake.query;
-    if (roomId) {
-      socket.join(roomId);
-    }
-
-    socket.on("disconnect", () => {
-      logger.info("un client si è disconnesso");
-      socket.leave(roomId as string);
-      socket.removeAllListeners();
-    });
-
-    socket.on("new-connection", async (roomId) => {
-      logger.info(`roomId ${roomId}`);
+    socket.on("join-room", async ({ roomId }) => {
+      logger.info(`evento join-room ${JSON.stringify(roomId)}`);
       await socket.join(roomId);
       const sockets = await io.in(roomId).fetchSockets();
       if (sockets.length <= 1) {
-        io.to(socket.id).emit("sei il primo!");
+        io.to(`${socket.id}`).emit("first-in-room");
       } else {
-        logger.info(`${socket.id} new user emited to room ${roomId}`);
-        socket.broadcast.to(roomId).emit(`new user: ${socket.id}`);
+        logger.info(`${socket.id} new-user emitted to room ${roomId}`);
+        socket.broadcast.to(roomId).emit("new-user", socket.id);
+        socket.broadcast.to(roomId).emit("users", sockets.length);
       }
     });
+
+    socket.on("disconnect", () => {
+      logger.info("un client si è disconnesso");
+      // socket.leave(roomId as string);
+      socket.removeAllListeners();
+    });
+
+    // socket.on("new-connection", async (roomId) => {
+    //   logger.info(`roomId ${roomId}`);
+    //   await socket.join(roomId);
+    //   const sockets = await io.in(roomId).fetchSockets();
+    //   if (sockets.length <= 1) {
+    //     io.to(socket.id).emit("sei il primo!");
+    //   } else {
+    //     logger.info(`${socket.id} new user emited to room ${roomId}`);
+    //     socket.broadcast.to(roomId).emit(`new user: ${socket.id}`);
+    //     socket.broadcast.to(roomId).emit("users", sockets.length);
+    //   }
+    // });
   });
 } catch (e) {
   console.error(e);
