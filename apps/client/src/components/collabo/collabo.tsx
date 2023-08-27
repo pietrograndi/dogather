@@ -5,7 +5,7 @@ export const Collabo = () => {
   const { startCollaboration, roomId, isConnected, disconnect } = useCollabContext()
   return <div>
     {!roomId && <button onClick={startCollaboration} >start collaboration</button>}
-    {roomId && <span>connecting...</span>}
+    {roomId && !isConnected && <span>connecting...</span>}
     <div>
       <pre>connection status: {isConnected ? '🟢': '🔴'}</pre>
     </div>

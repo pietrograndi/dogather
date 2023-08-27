@@ -32,21 +32,16 @@ app.get("/", (req, res) => {
 try {
   io.on("connection", (socket) => {
     logger.info("connessione stabilita");
-    io.to(socket.id).emit("init-room");
-    socket.on("join-room", async (roomId) => {
-      logger.info(`${socket.id} è entrato nella stanza ${roomId}`);
-    });
+
+    const { roomId, username } = socket.handshake.query;
+    if (roomId) {
+      socket.join(roomId);
+    }
 
     socket.on("disconnect", () => {
       logger.info("un client si è disconnesso");
-    });
-
-    socket.on("new-room", (data) => {
-      logger.info(data);
-    });
-
-    socket.on("message", (d) => {
-      logger.info(d);
+      socket.leave(roomId as string);
+      socket.removeAllListeners();
     });
 
     socket.on("new-connection", async (roomId) => {
