@@ -15,7 +15,7 @@ export const useSocket = (
   };
 
   useEffect(() => {
-    socketRef.current = io(wsAddress, { query: { roomId } });
+    socketRef.current = roomId ? io(wsAddress, { query: { roomId } }) : null;
 
     socketRef.current?.on(WS_EVENTS.WS_CONNECT, () => {
       setConnection(true);
