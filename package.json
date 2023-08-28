@@ -6,7 +6,10 @@
   "scripts": {
     "ws:dev": "pnpm -F @apps/ws run start:dev",
     "client:dev": "pnpm -F @apps/client run dev",
-    "client:build": "pnpm -F @apps/client run dev build"
+    "client:build": "pnpm -F @apps/client run dev build",
+    "shared:start": "pnpm -F @lib/shared start",
+    "shared:build": "pnpm -F @lib/shared build",
+    "link-update": "./link-update.sh"
   },
   "author": "",
   "license": "ISC"

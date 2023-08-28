@@ -4,6 +4,7 @@ import cors from "cors";
 import pino from "pino";
 import { Server as socketIO } from "socket.io";
 import dotenv from "dotenv";
+import { ioEvents, membersUpdate } from '@lib/shared'
 
 dotenv.config({
   path: `../../.env.${process.env.NODE_ENV}`,
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 try {
   io.on("connection", (socket) => {
     logger.info("connessione stabilita");
+    const roomId = socket.handshake.query.roomId as string
     socket.emit("init-room");
 
     socket.on("join-room", async ({ roomId }) => {
@@ -39,32 +41,26 @@ try {
       await socket.join(roomId);
       const sockets = await io.in(roomId).fetchSockets();
       if (sockets.length <= 1) {
-        io.to(`${socket.id}`).emit("first-in-room");
+        io.to(`${socket.id}`).emit(ioEvents.WS_FIRST_IN_ROOM);
       } else {
         logger.info(`${socket.id} new-user emitted to room ${roomId}`);
-        socket.broadcast.to(roomId).emit("new-user", socket.id);
-        socket.broadcast.to(roomId).emit("users", sockets.length);
+        socket.broadcast.to(roomId).emit(ioEvents.WS_UPDATE, membersUpdate(sockets.length));
       }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       logger.info("un client si è disconnesso");
-      // socket.leave(roomId as string);
+      socket.leave(roomId)
+      const sockets = await io.in(roomId).fetchSockets();
+      if (sockets.length <= 1) {
+        io.to(`${socket.id}`).emit(ioEvents.WS_FIRST_IN_ROOM);
+      } else {
+        logger.info(`${socket.id} new-user emitted to room ${roomId}`);
+        socket.broadcast.to(roomId).emit(ioEvents.WS_UPDATE, membersUpdate(sockets.length));
+      }
       socket.removeAllListeners();
     });
 
-    // socket.on("new-connection", async (roomId) => {
-    //   logger.info(`roomId ${roomId}`);
-    //   await socket.join(roomId);
-    //   const sockets = await io.in(roomId).fetchSockets();
-    //   if (sockets.length <= 1) {
-    //     io.to(socket.id).emit("sei il primo!");
-    //   } else {
-    //     logger.info(`${socket.id} new user emited to room ${roomId}`);
-    //     socket.broadcast.to(roomId).emit(`new user: ${socket.id}`);
-    //     socket.broadcast.to(roomId).emit("users", sockets.length);
-    //   }
-    // });
   });
 } catch (e) {
   console.error(e);
