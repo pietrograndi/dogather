@@ -5,7 +5,7 @@ const keyList = ['VITE_PORT','WS_PORT','WS_BASE_URL']
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
-  const env = loadEnv(mode, "../shared/", '');
+  const env = loadEnv(mode, "../../", '');
   return defineConfig({
     plugins: [react()],
     define: {

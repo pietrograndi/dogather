@@ -6,7 +6,7 @@ import { Server as socketIO } from "socket.io";
 import dotenv from "dotenv";
 
 dotenv.config({
-  path: `../shared/.env.${process.env.NODE_ENV}`,
+  path: `../../.env.${process.env.NODE_ENV}`,
 });
 
 const app = express();
